@@ -1,0 +1,19 @@
+{
+    "version": "0.0.2",
+    "name": "com.luhuiguo.cordova.voice",
+    "cordova_name": "Voice",
+    "description": "Cordova Voice Plugin",
+    "license": "Apache 2.0",
+    "repo": "https://github.com/luhuiguo/cordova-plugin-voice.git",
+    "issue": "https://github.com/luhuiguo/cordova-plugin-voice/issues",
+    "keywords": [
+        "cordova",
+        "media",
+        "voice"
+    ],
+    "platforms": [
+        "android",
+        "ios"
+    ],
+    "engines": []
+}
