@@ -109,10 +109,7 @@ var app = {
     navigator.contacts.find(
       ["displayName", "name"],
       function(contacts) {
-        contacts.sort(function(a,b){
-            return a.localeCompare(b);
-        });
-        console.log(contacts);
+        contacts = _.sortBy(contacts, function(contact) {return contact.name.formatted});
         $.each(contacts, function(){
           if (this.name.formatted && this.phoneNumbers) {
             var item = template.clone();
@@ -125,7 +122,10 @@ var app = {
       },
       function() {
         alert('error');
-      }
+      },
+        {
+            multiple: true
+        }
     );
   }
 };
