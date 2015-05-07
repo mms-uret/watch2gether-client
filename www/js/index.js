@@ -33,6 +33,14 @@ var app = {
             $(this).toggleClass('active');
         });
 
+        $('#invite').on('click', function(){
+            var numbers = [];
+            $('#contact-container .output .active .number').each(function(){
+                numbers.push($(this).text());
+            });
+            console.log(numbers.join(', '));
+        });
+
       $('#program-container .output').on('click', '.list-group-item', function() {
         $('#program-container .output').toggleClass('active', false);
         $(this).toggleClass('active');
@@ -106,6 +114,7 @@ var app = {
     var template = $('#contact-container .template');
     output.html("");
     $('#contact-container button').hide();
+    $('#invite').removeClass('hide');
     navigator.contacts.find(
       ["displayName", "name"],
       function(contacts) {
