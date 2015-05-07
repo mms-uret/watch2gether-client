@@ -1,12 +1,26 @@
 
-#program-container {
-    margin-top: 80px;
+.container-fluid {
+    padding-top: 80px;
 }
 
-#program-search {
+.list-search {
     margin-bottom: 20px;
+    margin-left: 10px;
 }
 
-#program-search-container {
-    margin-left: 10px;
+.navbar {
+    min-height: 70px;
+}
+
+.navbar-header {
+    padding: 20px 0px 0px 5px;
+}
+
+.navbar-brand {
+
+}
+
+iframe {
+    width: 10;
+    height: 10;
 }

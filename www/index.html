@@ -17,8 +17,11 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">watch2gether</a>
-          <button id="invite" type="button" class="btn btn-default navbar-btn pull-right">Einladen</button>
+          <div class="row">
+            <div class="col-md-1"><button id="back2Programs" type="button" class="btn btn-default navbar-btn pull-left hide">Zurück</button></div>
+            <div class="col-md-1"><a class="navbar-brand" href="#" class="center-block" id="navLabel">watch2gether</a></div>
+            <div class="col-md-1"><button id="invite" type="button" class="btn btn-default navbar-btn pull-right hide">Einladen</button></div>
+          </div>
         </div>
       </div>
     </nav>
@@ -26,13 +29,24 @@
     <div class="container-fluid app">
       <div class="row">
 
+        <div id="sms-container" class="center-block hide">
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <h4 id="sms-info">Titel</h4>
+        </div>
+
+        <!-- <iframe src="http://voicechatapi.com/pvfakawvf/?share" width="5" height="5" /> -->
+
         <div id="program-container" class="center-block">
-
-
-
-          <div class="row-fluid" id="program-search-container">
-            <label>Sendung suchen:</label>
-            <input type="search" name="search" id="program-search"/>
+          <div class="row-fluid" class="search-container">
+            <input type="search" name="search" id="program-search" class="list-search"/>
           </div>
 
           <div class="output list-group"></div>
@@ -42,14 +56,19 @@
           </div>
         </div>
 
-        <div id="contact-container" class="center-block">
-          <button class="btn btn-info">Kontakte</button>
+        <div id="contact-container" class="center-block hide">
+          <div class="row-fluid" class="search-container">
+            <input type="search" name="search" id="contacts-search" class="list-search" />
+          </div>
+
           <div class="output list-group"></div>
           <div class="list-group-item hide template">
-            <h4 class="list-group-item-heading name">Name</h4>
-            <p class="list-group-item-text number">Nummer</p>
+            <h4 class="list-group-item-heading title">Name</h4>
+            <p class="list-group-item-text info">Nummer</p>
           </div>
         </div>
+
+
       </div>
 
     </div><!-- /.container -->

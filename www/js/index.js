@@ -31,15 +31,35 @@ var app = {
         $('#contact-container button').on('click', this.renderContacts);
         $('#contact-container .output').on('click', '.list-group-item', function(){
             $(this).toggleClass('active');
+            $('#invite').toggleClass('hide', false);
         });
 
       $('#program-container .output').on('click', '.list-group-item', function() {
-        $('#program-container .output').toggleClass('active', false);
-        $(this).toggleClass('active');
+        app.renderContacts();
       });
 
-      $("#program-search").on("keyup", function(event){
+      $(".list-search").on("keyup", function(event) {
         app.onSearch($(this).val());
+      });
+
+      $("#back2Programs").on("click", function(event) {
+        app.renderProgram();
+      });
+
+      $("#invite").on("click", function(event) {
+        var senderNumber = '+41788914362',
+          receiverNumber = '+41788914362',
+          senderName = "Burim",
+          clientId = "7V3QbSNyGonv4wETAIltvnN5bPYZbgyk",
+          message = "Test sms";
+
+        $('#program-container').toggleClass('hide', true);
+        $('#contact-container').toggleClass('hide', true);
+        $('#back2Programs').toggleClass('hide', true);
+        $('#invite').toggleClass('hide', true);
+        $('#navLabel').text('SMS senden');
+
+        app.sendSMS(receiverNumber, senderNumber, senderName, clientId, message);
       });
     },
     // deviceready Event Handler
@@ -62,20 +82,32 @@ var app = {
     },
 
     onSearch: function(inputValue) {
-      $('#program-container .list-group-item').show();
-      $('#program-container .list-group-item').filter(function (index) {
-        var programTitle = $(this).find('.title').html().toLowerCase();
-        return programTitle.indexOf(inputValue.toLowerCase()) < 0;
+      $('.list-group-item').show();
+      $('.list-group-item').filter(function (index) {
+        var title = $(this).find('.title').html().toLowerCase();
+        return title.indexOf(inputValue.toLowerCase()) < 0;
       }).hide();
     },
 
     // Update DOM on a Received Event
     renderProgram: function () {
+
+      $('#program-container').toggleClass('hide', false);
+      $('#contact-container').toggleClass('hide', true);
+      $('#back2Programs').toggleClass('hide', true);
+      $('#navLabel').text('Sendungen');
+      $('#program-container .output .list-group-item').toggleClass('active', false);
+
       var output = $('#program-container .output');
       var template = $('#program-container .template');
+      output.html("");
+
+      // channel url: http://ws.srf.ch/tvprogramm/query/broadcasts.xml?channel=33000&day=3077
+      //var url = 'http://ws.srf.ch/tvprogramm/query/broadcasts.xml?channel=33000&day=3077';
+      var url = 'data/channel.xml';
 
         $.ajax({
-            url: 'data/channel.xml',
+            url: url,
             type: "GET",
             success: function(data) {
               $(data).find('result').each(function(){
@@ -105,6 +137,12 @@ var app = {
     var output = $('#contact-container .output');
     var template = $('#contact-container .template');
     output.html("");
+
+    $('#program-container').toggleClass('hide', true);
+    $('#contact-container').toggleClass('hide', false);
+    $('#back2Programs').toggleClass('hide', false);
+    $('#navLabel').text('Kontakte');
+
     $('#contact-container button').hide();
     navigator.contacts.find(
       ["displayName", "name"],
@@ -113,8 +151,8 @@ var app = {
           if (this.name.formatted && this.phoneNumbers) {
 
             var item = template.clone();
-            item.find('.name').text(this.name.formatted);
-            item.find('.number').text(this.phoneNumbers[0].value);
+            item.find('.title').text(this.name.formatted);
+            item.find('.info').text(this.phoneNumbers[0].value);
             item.removeClass('hide');
             output.append(item);
           }
@@ -124,5 +162,48 @@ var app = {
         alert('error');
       }
     );
+  },
+
+  sendSMS: function(number, senderNumber, senderName, clientId, message) {
+
+    var url = 'https://api.swisscom.com/v1/messaging/sms/outbound/tel:' + senderNumber + '/requests';
+
+    $('#sms-container').toggleClass('hide', false);
+    $('#sms-info').html('SMS wird gesendet ...');
+    $('#sms-info').append('<br/>nummer: ' + number);
+    $('#sms-info').append('<br/>senderNummer: ' + senderNumber);
+    $('#sms-info').append('<br/>senderName: ' + senderName);
+    $('#sms-info').append('<br/>clientId: ' + clientId);
+    $('#sms-info').append('<br/>message: ' + message);
+    $('#sms-info').append('<br/>url: ' + url);
+
+    $.ajax({
+      url: url,
+      type: "POST",
+      dataType: 'json',
+      contentType: 'application/json',
+      Accept: 'application/json',
+      processData: false,
+      data: "{\"outboundSMSMessageRequest\":{\"senderAddress\":\"tel:" + senderNumber +
+            "\", \"address\":[\"tel:" + number +
+            "\"],\"outboundSMSTextMessage\":{\"message\":\"" + message +
+            "\"},\"clientCorrelator\":\"any id\",\"senderName\":\"" + senderName + "\"}}",
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("client_id", clientId);
+      },
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "client_id": clientId
+      },
+      success: function(data) {
+        $('#sms-info').append('</br><br/>SMS ist gesendet worden');
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        $('#sms-info').append('</br><br/>Ein Fehler ist aufgetretten, statusText: ' +
+            jqXHR.statusText + ', textStatus: ' + textStatus + ', error: ' + errorThrown);
+      }
+    });
+
   }
 };
