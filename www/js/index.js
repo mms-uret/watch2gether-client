@@ -34,6 +34,14 @@ var app = {
             $('#invite').toggleClass('hide', false);
         });
 
+        $('#invite').on('click', function(){
+            var numbers = [];
+            $('#contact-container .output .active .number').each(function(){
+                numbers.push($(this).text());
+            });
+            console.log(numbers.join(', '));
+        });
+
       $('#program-container .output').on('click', '.list-group-item', function() {
         app.renderContacts();
       });
@@ -144,12 +152,13 @@ var app = {
     $('#navLabel').text('Kontakte');
 
     $('#contact-container button').hide();
+    $('#invite').removeClass('hide');
     navigator.contacts.find(
       ["displayName", "name"],
       function(contacts) {
+        contacts = _.sortBy(contacts, function(contact) {return contact.name.formatted});
         $.each(contacts, function(){
           if (this.name.formatted && this.phoneNumbers) {
-
             var item = template.clone();
             item.find('.title').text(this.name.formatted);
             item.find('.info').text(this.phoneNumbers[0].value);
@@ -160,7 +169,10 @@ var app = {
       },
       function() {
         alert('error');
-      }
+      },
+        {
+            multiple: true
+        }
     );
   },
 
