@@ -109,9 +109,12 @@ var app = {
     navigator.contacts.find(
       ["displayName", "name"],
       function(contacts) {
+        contacts.sort(function(a,b){
+            return a.localeCompare(b);
+        });
+        console.log(contacts);
         $.each(contacts, function(){
           if (this.name.formatted && this.phoneNumbers) {
-
             var item = template.clone();
             item.find('.name').text(this.name.formatted);
             item.find('.number').text(this.phoneNumbers[0].value);
