@@ -20,6 +20,7 @@ var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
+        app.renderProgram();
     },
     // Bind Event Listeners
     //
@@ -27,6 +28,7 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+
         $('#contact-container button').on('click', function() {
             var output = $('#contact-container .output');
             output.html("");
@@ -42,6 +44,10 @@ var app = {
                 }
             );
         });
+
+      $("#program-search").on("keyup", function(event){
+        app.onSearch($(this).val());
+      });
     },
     // deviceready Event Handler
     //
@@ -62,13 +68,35 @@ var app = {
         console.log('Received Event: ' + id);
     },
 
-    // Update DOM on a Received Event
-    renderProgram: function(id) {
-      var container = $('#program-container');
-
+    onSearch: function(inputValue) {
+      $('#program-list li').show();
+      $('#program-list li').filter(function (index) {
+        return $(this).html().toLowerCase().indexOf(inputValue.toLowerCase()) < 0;
+      }).hide();
     },
 
-    renderContacts: function() {
+    // Update DOM on a Received Event
+    renderProgram: function () {
+        var $container = $('#program-list');
+
+        $.ajax({
+            url: 'data/channel.xml',
+            type: "GET",
+            success: function(data) {
+              $(data).find('program').each(function(){
+                var programTitle = $(this).find("title").text();
+
+
+                $container.append('<li>' + programTitle + '</li>');
+              });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+
+            }
+        });
+    },
+
+    renderContacts: function () {
 
     }
 };
