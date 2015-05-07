@@ -33,6 +33,11 @@ var app = {
             $(this).toggleClass('active');
         });
 
+      $('#program-container .output').on('click', '.list-group-item', function() {
+        $('#program-container .output').toggleClass('active', false);
+        $(this).toggleClass('active');
+      });
+
       $("#program-search").on("keyup", function(event){
         app.onSearch($(this).val());
       });
@@ -57,25 +62,37 @@ var app = {
     },
 
     onSearch: function(inputValue) {
-      $('#program-list li').show();
-      $('#program-list li').filter(function (index) {
-        return $(this).html().toLowerCase().indexOf(inputValue.toLowerCase()) < 0;
+      $('#program-container .list-group-item').show();
+      $('#program-container .list-group-item').filter(function (index) {
+        var programTitle = $(this).find('.title').html().toLowerCase();
+        return programTitle.indexOf(inputValue.toLowerCase()) < 0;
       }).hide();
     },
 
     // Update DOM on a Received Event
     renderProgram: function () {
-        var $container = $('#program-list');
+      var output = $('#program-container .output');
+      var template = $('#program-container .template');
 
         $.ajax({
             url: 'data/channel.xml',
             type: "GET",
             success: function(data) {
-              $(data).find('program').each(function(){
+              $(data).find('result').each(function(){
                 var programTitle = $(this).find("title").text();
+                var programDateStr = $(this).find("realDateTime").text();
+                programDateStr = programDateStr.replace(/CEST/, '+0200');
+                var programDate = new Date(programDateStr);
+                var programDateOutput = programDate.toLocaleDateString() +
+                  ', ' + programDate.getHours() +
+                  ':' + programDate.getMinutes() + ' Uhr';
 
+                var item = template.clone();
+                item.find('.title').text(programTitle);
+                item.find('.infos').text(programDateOutput);
+                item.removeClass('hide');
+                output.append(item);
 
-                $container.append('<li>' + programTitle + '</li>');
               });
             },
             error: function(jqXHR, textStatus, errorThrown) {

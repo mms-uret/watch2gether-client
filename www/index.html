@@ -25,17 +25,24 @@
 
     <div class="container-fluid app">
       <div class="row">
-        <div id="program-container" class="center-block">
-          <div class="row-fluid">
-            <div class="span4">
-              <h6>Fussball: Barcelona vs. Real Madrid</h6>
-              <p>Heute 20:00 Uhr auf SRF 2</p>
-              <p><a class="btn btn-primary" href="#">Wählen</a></p>
-            </div><!--/span-->
-          </div><!--/row-->
-        </div>
-        <div id="contact-container" class="center-block">
 
+        <div id="program-container" class="center-block">
+
+
+
+          <div class="row-fluid" id="program-search-container">
+            <label>Sendung suchen:</label>
+            <input type="search" name="search" id="program-search"/>
+          </div>
+
+          <div class="output list-group"></div>
+          <div class="list-group-item hide template">
+            <h4 class="list-group-item-heading title">Titel</h4>
+            <p class="list-group-item-text infos">Info</p>
+          </div>
+        </div>
+
+        <div id="contact-container" class="center-block">
           <button class="btn btn-info">Kontakte</button>
           <div class="output list-group"></div>
           <div class="list-group-item hide template">
@@ -46,25 +53,6 @@
       </div>
 
     </div><!-- /.container -->
-
-          <div class="container-fluid">
-            <div class="row-fluid">
-              <div class="span9">
-                <h5>Sendung wählen:</h5>
-                <p></p>
-
-                <div id="program-container">
-                  <div class="row-fluid">
-                    <div class="span4">
-                      <h6>Fussball: Barcelona vs. Real Madrid</h6>
-                      <p>Heute 20:00 Uhr auf SRF 2</p>
-                      <p><a class="btn btn-primary" href="#">Wählen</a></p>
-                    </div><!--/span-->
-                  </div><!--/row-->
-                </div>
-
-              </div><!--/span-->
-            </div><!--/row-->
 
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
