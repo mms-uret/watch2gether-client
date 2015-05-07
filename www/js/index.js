@@ -27,6 +27,21 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        $('#contact-container button').on('click', function() {
+            var output = $('#contact-container .output');
+            output.html("");
+            navigator.contacts.find(
+                ["displayName", "name"],
+                function(contacts) {
+                    $.each(contacts, function(){
+                        output.html(output.html() + "<br>" + this.name.formatted);
+                    });
+                },
+                function() {
+                    alert('error');
+                }
+            );
+        });
     },
     // deviceready Event Handler
     //
@@ -51,7 +66,9 @@ var app = {
     renderProgram: function(id) {
       var container = $('#program-container');
 
+    },
+
+    renderContacts: function() {
+
     }
-
-
 };
