@@ -28,21 +28,9 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
-
-        $('#contact-container button').on('click', function() {
-            var output = $('#contact-container .output');
-            output.html("");
-            navigator.contacts.find(
-                ["displayName", "name"],
-                function(contacts) {
-                    $.each(contacts, function(){
-                        output.html(output.html() + "<br>" + this.name.formatted);
-                    });
-                },
-                function() {
-                    alert('error');
-                }
-            );
+        $('#contact-container button').on('click', this.renderContacts);
+        $('#contact-container .output').on('click', '.list-group-item', function(){
+            $(this).toggleClass('active');
         });
 
       $("#program-search").on("keyup", function(event){
@@ -96,7 +84,28 @@ var app = {
         });
     },
 
-    renderContacts: function () {
+  renderContacts: function() {
+    var output = $('#contact-container .output');
+    var template = $('#contact-container .template');
+    output.html("");
+    $('#contact-container button').hide();
+    navigator.contacts.find(
+      ["displayName", "name"],
+      function(contacts) {
+        $.each(contacts, function(){
+          if (this.name.formatted && this.phoneNumbers) {
 
-    }
+            var item = template.clone();
+            item.find('.name').text(this.name.formatted);
+            item.find('.number').text(this.phoneNumbers[0].value);
+            item.removeClass('hide');
+            output.append(item);
+          }
+        });
+      },
+      function() {
+        alert('error');
+      }
+    );
+  }
 };
