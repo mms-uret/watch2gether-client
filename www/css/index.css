@@ -16,11 +16,10 @@
     padding: 20px 0px 0px 5px;
 }
 
-.navbar-brand {
-
+#program-search-container {
+    margin-left: 10px;
 }
 
-iframe {
-    width: 10;
-    height: 10;
+.navbar .container {
+    margin-top: 20px;
 }
