@@ -45,5 +45,13 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+    },
+
+    // Update DOM on a Received Event
+    renderProgram: function(id) {
+      var container = $('#program-container');
+
     }
+
+
 };
