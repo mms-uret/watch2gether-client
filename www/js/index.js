@@ -27,23 +27,15 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
         $('#contact-container button').on('click', this.renderContacts);
         $('#contact-container .output').on('click', '.list-group-item', function(){
             $(this).toggleClass('active');
             $('#invite').toggleClass('hide', false);
         });
 
-        $('#invite').on('click', function(){
-            var numbers = [];
-            $('#contact-container .output .active .number').each(function(){
-                numbers.push($(this).text());
-            });
-            console.log(numbers.join(', '));
-        });
-
       $('#program-container .output').on('click', '.list-group-item', function() {
-        app.renderContacts();
+          $(this).toggleClass('active');
+          app.renderContacts();
       });
 
       $(".list-search").on("keyup", function(event) {
@@ -54,40 +46,26 @@ var app = {
         app.renderProgram();
       });
 
-      $("#invite").on("click", function(event) {
-        var senderNumber = '+41788914362',
-          receiverNumber = '+41788914362',
-          senderName = "Burim",
-          clientId = "7V3QbSNyGonv4wETAIltvnN5bPYZbgyk",
-          message = "Test sms";
-
-        $('#program-container').toggleClass('hide', true);
-        $('#contact-container').toggleClass('hide', true);
-        $('#back2Programs').toggleClass('hide', true);
-        $('#invite').toggleClass('hide', true);
-        $('#navLabel').text('SMS senden');
-
-        app.sendSMS(receiverNumber, senderNumber, senderName, clientId, message);
+      $("#invite").on("click", function() {
+          var numbers = [], number;
+          $('#contact-container .output .active .info').each(function(){
+              number = $(this).text();
+              number = number.replace(/ /g, '');
+              number = number.replace(/\+/g, '');
+              if (number.substr(0, 1) == '0') {
+                  number = '41' + number.substr(1);
+              }
+              numbers.push(number);
+          });
+          var show = $('#program-container .active');
+          $('#sms-container').removeClass('hide');
+          $('#contact-container').addClass('hide');
+          //app.sendEvent('SRF 1', show.attr('data-timestamp'), show.find('.title').text(), numbers);
+          var now = new Date();
+          app.sendEvent('SRF 1', (now.getTime() / 1000 + 120), show.find('.title').text(), numbers);
       });
     },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    },
 
     onSearch: function(inputValue) {
       $('.list-group-item').show();
@@ -131,6 +109,7 @@ var app = {
                 item.find('.title').text(programTitle);
                 item.find('.infos').text(programDateOutput);
                 item.removeClass('hide');
+                item.attr('data-timestamp', programDate.getTime() / 1000);
                 output.append(item);
 
               });
@@ -176,44 +155,29 @@ var app = {
     );
   },
 
-  sendSMS: function(number, senderNumber, senderName, clientId, message) {
+  sendEvent: function(channel, time, show, numbers) {
 
-    var url = 'https://api.swisscom.com/v1/messaging/sms/outbound/tel:' + senderNumber + '/requests';
-
-    $('#sms-container').toggleClass('hide', false);
-    $('#sms-info').html('SMS wird gesendet ...');
-    $('#sms-info').append('<br/>nummer: ' + number);
-    $('#sms-info').append('<br/>senderNummer: ' + senderNumber);
-    $('#sms-info').append('<br/>senderName: ' + senderName);
-    $('#sms-info').append('<br/>clientId: ' + clientId);
-    $('#sms-info').append('<br/>message: ' + message);
-    $('#sms-info').append('<br/>url: ' + url);
+    var data = {
+        'channel': channel,
+        'time': time,
+        'show': show,
+        'numbers': numbers
+    };
 
     $.ajax({
-      url: url,
+      url: 'http://watch2gether.nova.scapp.io/watch2gether/event',
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
       Accept: 'application/json',
       processData: false,
-      data: "{\"outboundSMSMessageRequest\":{\"senderAddress\":\"tel:" + senderNumber +
-            "\", \"address\":[\"tel:" + number +
-            "\"],\"outboundSMSTextMessage\":{\"message\":\"" + message +
-            "\"},\"clientCorrelator\":\"any id\",\"senderName\":\"" + senderName + "\"}}",
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("client_id", clientId);
-      },
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "client_id": clientId
-      },
+      data: JSON.stringify(data),
       success: function(data) {
-        $('#sms-info').append('</br><br/>SMS ist gesendet worden');
+        console.log('success');
+          console.log(data);
       },
-      error: function(jqXHR, textStatus, errorThrown) {
-        $('#sms-info').append('</br><br/>Ein Fehler ist aufgetretten, statusText: ' +
-            jqXHR.statusText + ', textStatus: ' + textStatus + ', error: ' + errorThrown);
+      error: function() {
+        console.log('error');
       }
     });
 
