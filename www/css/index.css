@@ -5,7 +5,7 @@
 
 .list-search {
     margin-bottom: 20px;
-    margin-left: 10px;
+    margin-left: 15px;
 }
 
 .navbar {
@@ -13,11 +13,7 @@
 }
 
 .navbar-header {
-    padding: 20px 0px 0px 5px;
-}
-
-#program-search-container {
-    margin-left: 10px;
+    padding: 0;
 }
 
 .navbar .container {
