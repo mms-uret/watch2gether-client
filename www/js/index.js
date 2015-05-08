@@ -60,6 +60,10 @@ var app = {
           var show = $('#program-container .active');
           $('#sms-container').removeClass('hide');
           $('#contact-container').addClass('hide');
+          $('#back2Programs').addClass('hide');
+          $('#invite').addClass('hide');
+          $('#navLabel').text('Fertig!');
+
           //app.sendEvent('SRF 1', show.attr('data-timestamp'), show.find('.title').text(), numbers);
           var now = new Date();
           app.sendEvent('SRF 1', (now.getTime() / 1000 + 120), show.find('.title').text(), numbers);
@@ -172,9 +176,16 @@ var app = {
       Accept: 'application/json',
       processData: false,
       data: JSON.stringify(data),
-      success: function(data) {
-        console.log('success');
-          console.log(data);
+      success: function() {
+        var show = $('#program-container .active');
+        var contacts = $('#contact-container .output .active');
+        var infoBox = $('#success-container');
+        infoBox.find('.show').html('Sendung: ' + show.find('title').text());
+        infoBox.find('.time').html('Zeit: ' + show.find('infos').text());
+        contacts.each(function(){
+          infoBox.find('friends').append('<li>' + $(this).find('title').text());
+        });
+        infoBox.removeClass('hide');
       },
       error: function() {
         console.log('error');
