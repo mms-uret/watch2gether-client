@@ -165,6 +165,7 @@ var app = {
         'channel': channel,
         'time': time,
         'show': show,
+        'chatUrl': 'https://plus.google.com/hangouts/_/calendar/Y29ucmFkLnBleWVyQGdtYWlsLmNvbQ.609k1a9tiu1si1o2tfl8ufpgkg',
         'numbers': numbers
     };
 
@@ -180,10 +181,10 @@ var app = {
         var show = $('#program-container .active');
         var contacts = $('#contact-container .output .active');
         var infoBox = $('#success-container');
-        infoBox.find('.show').html('Sendung: ' + show.find('title').text());
-        infoBox.find('.time').html('Zeit: ' + show.find('infos').text());
+        infoBox.find('.show').text('Sendung: ' + show.find('.title').text());
+        infoBox.find('.time').html('Zeit: ' + show.find('.infos').text());
         contacts.each(function(){
-          infoBox.find('friends').append('<li>' + $(this).find('title').text());
+          infoBox.find('.friends').append('<li>' + $(this).find('.title').text() + '</li>');
         });
         infoBox.removeClass('hide');
       },
